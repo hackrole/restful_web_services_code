@@ -1,0 +1,70 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN"
+"http://www.w3.org/TR/REC-html40/transitional.dtd">
+<!--yahoo-ajax-dynamic.html-->
+<!--An Ajax application that uses dynamic SCRIPT tags to interactively
+    fetch data from Yahoo! Web Services and call predefined functions
+    on that data.-->
+
+<html>
+<head><title>Javascript Yahoo! JSON - Dynamic</title></head>
+<body>
+<h1>Javascript Yahoo! JSON example with dynamic SCRIPT tags</h1>
+
+<form onsubmit="callYahoo(); return false;">
+ What would you like to see? <input id="query" type="text" /><br />
+ <input type="submit" value="Fetch pictures from Yahoo! Image Search"/>
+</form>
+
+<div id="images">
+</div>
+
+<script type="text/javascript">
+function formatImages(result)
+{
+  // First clear out any old images.
+  var images = document.getElementById("images");
+  while (images.firstChild) 
+  {
+    images.removeChild(images.firstChild);
+  }
+
+  items = result["ResultSet"]["Result"];
+  for (var i = 0; i < items.length; i++)
+  {
+    image = items[i];
+
+    // Create a link
+    var link = document.createElement("a");
+    link.setAttribute("href", image["ClickUrl"]);
+
+    // Put a thumbnail image in the link.
+    var img = document.createElement("img");
+    var thumbnail = image["Thumbnail"];
+    img.setAttribute("src", thumbnail["Url"]);
+    img.setAttribute("width", thumbnail["Width"]);
+    img.setAttribute("height", thumbnail["Height"]);
+    img.setAttribute("title", image["Height"]);
+    link.appendChild(img);    
+    images.appendChild(link);
+  }
+}
+</script>
+<!-- -->
+<script type="text/javascript" src="jsr_class.js"></script>
+
+<script type="text/javascript">
+function callYahoo()
+{
+  var query = document.getElementById("query").value;
+  var uri = "http://api.search.yahoo.com/ImageSearchService/V1/imageSearch" +
+            "?query=" + escape(query) + 
+	    "&appid=restbook&output=json&callback=formatImages";
+  alert(uri);
+  var request = new JSONscriptRequest(uri);
+  request.buildScriptTag();
+  request.addScriptTag();
+}
+</script>
+
+</body>
+</html>

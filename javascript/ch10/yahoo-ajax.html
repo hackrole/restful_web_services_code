@@ -1,0 +1,49 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN"
+"http://www.w3.org/TR/REC-html40/transitional.dtd">
+<!--yahoo-ajax.html-->
+<!--An Ajax application that uses the JSON output feature of Yahoo!
+    Web Services-->
+
+<html>
+<head><title>Javascript Yahoo! JSN</title></head>
+<body>
+<h1>Javascript Yahoo! JSON example</h1>
+
+<p id="message">Loading pictures of baby elephants!</p>
+
+<div id="images">
+</div>
+
+<script type="text/javascript">
+function formatImages(result)
+{
+  var images = document.getElementById("images");
+  items = result["ResultSet"]["Result"];
+  document.getElementById("message").firstChild.textContent =
+    items.length + " baby elephant pictures:";
+  for (var i = 0; i < items.length; i++)
+  {
+    image = items[i];
+
+    // Create a link
+    var link = document.createElement("a");
+    link.setAttribute("href", image["ClickUrl"]);
+
+    // Put a thumbnail image in the link.
+    var img = document.createElement("img");
+    var thumbnail = image["Thumbnail"];
+    img.setAttribute("src", thumbnail["Url"]);
+    img.setAttribute("width", thumbnail["Width"]);
+    img.setAttribute("height", thumbnail["Height"]);
+    img.setAttribute("title", image["Height"]);
+    link.appendChild(img);    
+    images.appendChild(link);
+  }
+}
+</script>
+
+<script type="text/javascript" 
+ src="http://api.search.yahoo.com/ImageSearchService/V1/imageSearch?appid=restbook&query=baby+elephant&output=json&callback=formatImages" />
+
+</body>
+</html>

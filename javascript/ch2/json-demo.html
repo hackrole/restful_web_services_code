@@ -1,0 +1,17 @@
+<!-- json-demo.html -->
+<!-- In a real application, you would save json.js locally
+     instead of fetching it from json.org every time. -->
+<script type="text/javascript" src="http://www.json.org/json.js">
+</script>
+
+<script type="text/javascript">
+ array = [3, "three"]
+ alert("Converted array into JSON string: '" + array.toJSONString() + "'")
+  json = "[4, \"four\"]"
+ alert("Converted JSON '" + json + "' into array:")
+ array2 = json.parseJSON()
+ for (i=0; i < array2.length; i++) 
+ {
+   alert("Element #" + i + " is " + array2[i])
+ }
+</script>

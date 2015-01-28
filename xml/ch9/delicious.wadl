@@ -1,0 +1,59 @@
+<?xml version="1.0"?>
+<!-- This is a partial bootleg WADL file for the del.icio.us API. -->
+
+<application xmlns="http://research.sun.com/wadl/2006/07">
+ 
+  <!-- The resource -->
+  <resources base="https://api.del.icio.us/">
+    <doc xml:lang="en" title="The del.icio.us API v1">
+      Post or retrieve your bookmarks from the social networking website.
+      Limit requests to one per second.
+    </doc>
+    
+    <resource path="v1">
+      <param name="Authorization" style="header" required="true">
+	<doc xml:lang="en">All del.icio.us API calls must be authenticated
+	using Basic HTTP auth.</doc>
+      </param>
+
+      <resource path="posts">
+	<resource path="recent">
+	  <method href="#getRecentPosts" />
+	</resource>
+      </resource>     
+    </resource>
+  </resources>
+  
+<!-- -->
+
+  <!-- The method -->
+  <method id="getRecentPosts" name="GET">
+
+    <doc xml:lang="en" title="Returns a list of the most recent posts." />
+    
+    <request>
+      <param name="tag" style="form">
+	<doc xml:lang="en" title="Filter by this tag." />
+      </param>
+      
+      <param name="count" style="form" default="15">
+	<doc xml:lang="en" title="Number of items to retrieve.">
+	  Maximum: 100
+	</doc>
+      </param>
+    </request>
+    
+    <response>
+      <representation href="#postList" />
+      <fault id="AuthorizationRequired" status="401" />
+    </response>
+  </method>
+
+<!-- -->
+
+  <!-- The representation -->
+  <representation id="postList" mediaType="text/xml" element="posts">
+    <param name="post" path="/posts/post" repeating="true" />
+  </representation>
+  
+</application>

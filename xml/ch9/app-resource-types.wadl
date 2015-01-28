@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+<!-- This is a description of two common types of resources that respond
+     to the Atom Publishing Protocol. -->
+
+<application xmlns="http://research.sun.com/wadl/2006/07"
+             xmlns:app="http://purl.org/atom/app">
+
+  <!-- An Atom collection accepts Atom entries via POST. -->
+  <resource_type id="atom_collection">
+    <method href="#getCollection" />
+    <method href="#postNewAtomMember" />
+  </resource_type>
+
+  <!-- An image collection accepts image files via POST. -->
+  <resource_type id="image_collection">
+    <method href="#getCollection" />
+    <method href="#postNewImageMember" />
+  </resource_type>
+<!-- -->
+  <!-- Three possible operations on resources. -->
+  <method name="GET" id="getCollection">
+    <response>
+      <representation href="#feed" />
+    </response>
+  </method>
+
+  <method name="POST" id="postNewAtomMember">
+    <request>
+      <representation href="#entry" />
+    </request>
+  </method>
+
+  <method name="POST" id="postNewImageMember">
+    <request>
+      <representation id="image"  mediaType="image/*" />
+      <param name="Slug" style="header" />
+    </request>
+  </method>
+<!-- -->
+  <!-- Two possible XML representations. -->
+  <representation id="feed" mediaType="application/atom+xml"
+		  element="atom:feed" />
+
+  <representation id="entry" mediaType="application/atom+xml"
+		  element="atom:entry" />
+
+</application>

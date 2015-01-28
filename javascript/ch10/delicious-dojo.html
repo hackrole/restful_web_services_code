@@ -1,0 +1,95 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN"
+"http://www.w3.org/TR/REC-html40/transitional.dtd">
+<!--delicious-prototype.html-->
+<!--An Ajax application written with Prototype that uses the
+    del.icio.us web service.  This application will probably only work
+    from a local file.  Even then, your browser's security policy
+    might prevent it from running.-->
+
+<html>
+<head><title>Javascript del.icio.us with Dojo</title></head>
+<body>
+<h1>Javascript/Dojo del.icio.us example</h1>
+
+<p>Click the button, and I'll fetch and display your most recent
+bookmarks.</p>
+
+<form onsubmit="callDelicious(); return false;">
+ <input type="submit" value="Fetch del.icio.us bookmarks"/>
+</form>
+
+<div id="message"> </div>
+
+<ul id="links"></ul>
+
+<script type="text/javascript" src="dojo/dojo.js"></script>
+<script type="text/javascript">
+
+function setMessage(newValue)
+{
+  message = document.getElementById("message");
+  message.firstChild.textContent = newValue;
+}
+
+function callDelicious()
+{
+  try 
+  {
+    if (netscape.security.PrivilegeManager.enablePrivilege)
+    {
+      netscape.security.PrivilegeManager.enablePrivilege("UniversalBrowserRead");
+    }
+  } 
+  catch (e) 
+  {
+    alert("Sorry, browser security settings won't let this program run.");
+    return;
+  }
+
+  // Remove any old links
+  var links = document.getElementById("links");
+  while (links.firstChild) 
+  {
+    links.removeChild(links.firstChild);
+  }
+  setMessage("Please wait...");
+
+  dojo.require("dojo.io.*");
+  dojo.io.bind({ url: "https://api.del.icio.us/v1/posts/recent",
+                              
+                 load: populateLinkList, error: reportFailure });
+
+  function reportFailure(type, error)
+  {    
+    setMessage("An error occured: " + error.message);
+  }
+
+  // Called when the HTTP request has completed.
+  function populateLinkList(type, data, request)
+  {  
+    setMessage("Request complete.");
+    if (netscape.security.PrivilegeManager.enablePrivilege)
+    {
+      netscape.security.PrivilegeManager.enablePrivilege("UniversalBrowserRead");
+    }
+
+    posts = request.responseXML.getElementsByTagName("post");
+
+    setMessage(posts.length + " link(s) found:");
+    for (var i = 0; i < posts.length; i++)
+    {
+      post = posts[i];
+      var link = document.createElement("a");
+      var description = post.getAttribute('description');
+      link.setAttribute("href", post.getAttribute('href'));
+      link.appendChild(document.createTextNode(description));
+
+      var listItem = document.createElement("li");
+      listItem.appendChild(link);
+      links.appendChild(listItem)
+    }
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,93 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0
+ Transitional//EN" "http://www.w3.org/TR/REC-html40/transitional.dtd">
+<!--delicious-ajax.html-->
+<!--An Ajax application that uses the del.icio.us web service. This
+     application will probably only work when saved as a local
+     file. Even then, your browser's security policy might prevent it
+     from running.-->
+
+<html>
+ <head>
+  <title>Javascript del.icio.us</title>
+ </head> 
+ <body>
+  <h1>Javascript del.icio.us example</h1>
+
+  <p>Enter your del.icio.us account information, and I'll fetch and
+  display your most recent bookmarks.</p>
+
+  <form onsubmit="callDelicious(); return false;"> 
+    Username: <input id="username" type="text" /><br /> 
+    Password: <input id="password" type="password" /><br /> 
+    <input type="submit" value="Fetch del.icio.us bookmarks"/>
+  </form>
+
+  <div id="message"></div>
+  
+  <ul id="links"></ul>
+<!-- -->
+  <script type="text/javascript">      
+   function setMessage(newValue) { 
+     message = document.getElementById("message"); 
+     message.firstChild.textContent = newValue;
+   } 
+//
+   function callDelicious() { // Get permission from the browser to send the request. 
+     try {
+       if (netscape.security.PrivilegeManager.enablePrivilege)
+         netscape.security.PrivilegeManager.enablePrivilege("UniversalBrowserRead");
+     } catch (e) { 
+       alert("Sorry, browser security settings won't let this program run."); 
+       return; 
+     }
+
+     // Fetch the user-entered account information 
+     var username = document.getElementById("username").value; 
+     var password = document.getElementById("password").value;
+
+     // Remove any old links from the list. 
+     var links = document.getElementById("links"); 
+     while (links.firstChild) 
+       links.removeChild(links.firstChild) 
+     setMessage("Please wait...");
+//
+     // Send the request. 
+     // See "Working Around the Corner Cases" for a cross-browser 
+     // "createXMLHttpRequest" implementation. 
+     request = new XMLHttpRequest(); 
+     request.open("GET", "https://api.del.icio.us/v1/posts/recent", true, 
+                  username, password);
+     request.onreadystatechange = populateLinkList; 
+     request.send(null);
+//
+     // Called when the HTTP request has completed. 
+     function populateLinkList() { 
+       if (request.readyState != 4) // Request has not yet completed
+         return;
+
+      setMessage("Request complete."); 
+      if (netscape.security.PrivilegeManager.enablePrivilege) 
+        netscape.security.PrivilegeManager.enablePrivilege("UniversalBrowserRead");
+      // Find the "post" tags in the representation
+      posts = request.responseXML.getElementsByTagName("post");
+
+      setMessage(posts.length + " link(s) found:"); 
+      // For every "post" tag in the XML document...
+      for (var i = 0; i < posts.length; i++) { 
+        post = posts[i]; 
+        // ...create a link that links to the appropriate URI.
+        var link = document.createElement("a"); 
+        var description = post.getAttribute('description'); 
+        link.setAttribute("href", post.getAttribute('href'));
+        link.appendChild(document.createTextNode(description));
+
+        // Stick the link in an "li" tag...
+        var listItem = document.createElement("li");
+        // ...and make the "li" tag a child of the "ul" tag.
+        listItem.appendChild(link); links.appendChild(listItem)
+      }
+    }
+  }
+  </script> 
+ </body>
+</html>

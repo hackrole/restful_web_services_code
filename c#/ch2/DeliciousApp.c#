@@ -1,0 +1,25 @@
+using System;
+using System.IO;
+using System.Net;
+using System.Xml.XPath;
+
+public class DeliciousApp {
+    static string user = "username";
+    static string password = "password";
+    static Uri uri = new Uri("https://api.del.icio.us/v1/posts/recent");
+
+    static void Main(string[] args) {
+        HttpWebRequest request = (HttpWebRequest) WebRequest.Create(uri);
+        request.Credentials = new NetworkCredential(user, password);
+        HttpWebResponse response = (HttpWebResponse) request.GetResponse();
+
+        XPathDocument xml = new
+	    XPathDocument(response.GetResponseStream());
+        XPathNavigator navigator = xml.CreateNavigator();
+        foreach (XPathNavigator node in navigator.Select("/posts/post")) {
+          string description = node.GetAttribute("description","");
+          string href = node.GetAttribute("href","");
+          Console.WriteLine(description + ": " + href);
+        }
+    }
+}

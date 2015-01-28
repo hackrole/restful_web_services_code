@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<!-- This is a description of three "collection" resources that respond
+     to the Atom Publishing Protocol. -->
+
+<application xmlns="http://research.sun.com/wadl/2006/07"
+             xmlns:app="http://purl.org/atom/app">
+  <resources base="http://www.example.com/">
+    <resource path="RESTfulNews" 
+     type="http://www.example.com/app-resource-types.wadl#atom_collection" />
+    <resource path="samruby/photos" 
+     type="http://www.example.com/app-resource-types.wadl#image_collection" />
+    <resource path="leonardr/photos" 
+     type="http://www.example.com/app-resource-types.wadl#image_collection"/>
+  </resources>
+</application>
